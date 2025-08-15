@@ -103,14 +103,13 @@ const studentCourseInsert = async (req, res) => {
       "SELECT * FROM class WHERE code = $1 and sec = $2 and session = $3",
       [code, section, session]
     );
-
     if (user.rows.length <= 0) {
       return res.status(401).json("no such class");
     }
 
     const Check = await pool.query(
-      "SELECT * FROM student_course WHERE id = $1 and code = $2 and sec = $3 session = $4",
-      [st_id, code, section,session]
+      "SELECT * FROM student_course WHERE id = $1 and code = $2 and sec = $3 and session = $4",
+      [st_id, code, section, session]
     );
 
     if (Check.rows.length > 0) {
@@ -135,7 +134,7 @@ on temp1.slot = temp2.slot and temp2.day = temp1.day
 as temp3 
 group by day,slot)
 as temp4 where count = 3`,
-      [st_id, code, section,session]
+      [st_id, code, section, session]
     );
     if (Count.rows.length > 0) {
       return res
@@ -147,7 +146,7 @@ as temp4 where count = 3`,
       `insert into student_course(id, code,sec,session)
 values
 ($1,$2,$3,$4) RETURNING *;`,
-      [st_id, code, section,session]
+      [st_id, code, section, session]
     );
 
     res.json(NewUser.rows);
