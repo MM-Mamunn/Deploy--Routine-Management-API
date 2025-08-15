@@ -51,14 +51,12 @@ ORDER BY day, slot;
   }
 };
 
-
 const Currentpersonalclass = async (req, res) => {
   const st_id = req.user.id;
   const day = req.params.slug1;
   const slot = req.params.slug2;
-  console.log("day slot ",day,slot);
-  
-  
+  console.log("day slot ", day, slot);
+
   try {
     const data = await pool.query(
       `select * from
@@ -70,9 +68,9 @@ as temp2
 on temp1.sec = temp2.sec and temp1.code = temp2.code
 where slot = $2 and day = $3
 `,
-      [st_id,slot,day]
+      [st_id, slot, day]
     );
-    
+
     return res.status(200).json({ currentclass: data.rows });
   } catch (err) {
     console.error(err.message);
@@ -87,8 +85,8 @@ const Profile = async (req, res) => {
       `select id, name, sec, phone, email from student where id = $1`,
       [st_id]
     );
-    
-    return res.status(200).json(data.rows );
+
+    return res.status(200).json(data.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -96,14 +94,14 @@ const Profile = async (req, res) => {
 };
 
 const studentCourseInsert = async (req, res) => {
-  const { code, section } = req.body;
+  const { code, section, session } = req.body;
 
   const st_id = req.user.id;
 
   try {
     const user = await pool.query(
-      "SELECT * FROM class WHERE code = $1 and sec = $2",
-      [code, section]
+      "SELECT * FROM class WHERE code = $1 and sec = $2 and session = $3",
+      [code, section, session]
     );
 
     if (user.rows.length <= 0) {
@@ -111,8 +109,8 @@ const studentCourseInsert = async (req, res) => {
     }
 
     const Check = await pool.query(
-      "SELECT * FROM student_course WHERE id = $1 and code = $2 and sec = $3",
-      [st_id, code, section]
+      "SELECT * FROM student_course WHERE id = $1 and code = $2 and sec = $3 session = $4",
+      [st_id, code, section,session]
     );
 
     if (Check.rows.length > 0) {
@@ -129,7 +127,7 @@ select temp1.day,temp1.slot from
 as temp1
 join
 
-(select * from class where code = $2 and sec = $3)
+(select * from class where code = $2 and sec = $3 and session = $4)
 as temp2
 on temp1.slot = temp2.slot and temp2.day = temp1.day 
 
@@ -137,7 +135,7 @@ on temp1.slot = temp2.slot and temp2.day = temp1.day
 as temp3 
 group by day,slot)
 as temp4 where count = 3`,
-      [st_id, code, section]
+      [st_id, code, section,session]
     );
     if (Count.rows.length > 0) {
       return res
@@ -146,10 +144,10 @@ as temp4 where count = 3`,
     }
 
     const NewUser = await pool.query(
-      `insert into student_course(id, code,sec)
+      `insert into student_course(id, code,sec,session)
 values
-($1,$2,$3) RETURNING *;`,
-      [st_id, code, section]
+($1,$2,$3,$4) RETURNING *;`,
+      [st_id, code, section,session]
     );
 
     res.json(NewUser.rows);
@@ -158,4 +156,4 @@ values
     res.status(500).send("Server error");
   }
 };
-export { personalRoutine, Profile, studentCourseInsert ,Currentpersonalclass};
+export { personalRoutine, Profile, studentCourseInsert, Currentpersonalclass };
