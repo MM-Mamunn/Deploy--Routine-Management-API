@@ -4,6 +4,7 @@ import pool from "../db.js";
 
 const personalRoutine = async (req, res) => {
   const st_id = req.user.id;
+  const session = req.params.slug;
 
   try {
     const user = await pool.query(
@@ -19,13 +20,13 @@ FROM (
     SELECT * 
     FROM class 
     NATURAL JOIN student_course 
-    WHERE id = $1 
+    WHERE id = $1 and session = $2
     ORDER BY code, faculty
 ) AS t
 GROUP BY day, slot
 ORDER BY day, slot;
 `,
-      [st_id]
+      [st_id, session]
     );
     let final = [];
     for (let i = 0; i < user.rows.length; i++) {

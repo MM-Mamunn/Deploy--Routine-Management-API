@@ -4,7 +4,7 @@ import {personalRoutine, Profile, studentCourseInsert,Currentpersonalclass} from
 import studentAuthorization from '../middlewares/studentAuthorizan.js';
 
 
-router.post('/fullroutine/',studentAuthorization,personalRoutine);
+router.post('/fullroutine/:slug',studentAuthorization,personalRoutine);
 router.get('/profile/',studentAuthorization,Profile);
 router.get('/currentpersonalclass/:slug1/:slug2/',studentAuthorization,Currentpersonalclass);
 router.post('/course_insert/',studentAuthorization,studentCourseInsert);
