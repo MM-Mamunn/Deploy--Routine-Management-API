@@ -24,12 +24,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api/register", register);
-app.use("/api/login", login);
-app.use("/api/section", sectionRoutine);
-app.use("/api/user", userProfile);
-app.use("/api/lookLike", courseLookLike);
-app.use("/api/room", room);
+app.use("/register", register);
+app.use("/login", login);
+app.use("/section", sectionRoutine);
+app.use("/user", userProfile);
+app.use("/lookLike", courseLookLike);
+app.use("/room", room);
 
 // Export as a function for Vercel
 export default app;
