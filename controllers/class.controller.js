@@ -3,7 +3,7 @@ import pool from "../db.js";
 //authorizeentication
 
 const classEntry = async (req, res) => {
-  const { session, section, code, faculty, room, day, slot } = req.body;
+  const { session, section, code, faculty, room, day, slot,id } = req.body;
   try {
     // Check for existing class
     const checkExist = await pool.query(
@@ -14,16 +14,14 @@ const classEntry = async (req, res) => {
 
     if (checkExist.rows.length > 0) {
       // Found duplicate row
-      return res
-        .status(400)
-        .json({ error: "Class entry already exists with these details." });
+      return res.status(400).json({ error: "Class entry already exists with these details." });
     }
 
     // Insert new class if not exists
     const newClass = await pool.query(
-      `INSERT INTO class(session, sec, code, faculty, room, day, slot)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
-      [session, section, code, faculty, room, day, slot]
+      `INSERT INTO class(session, sec, code, faculty, room, day, slot,by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`,
+      [session, section, code, faculty, room, day, slot,id]
     );
 
     res.json(newClass.rows);

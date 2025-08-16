@@ -42,7 +42,6 @@ const sectionLookLike = async (req, res) => {
 };
 
 const facultyLookLike = async (req, res) => {
-
   const faculty = req.params.slug;
 
   try {
@@ -60,7 +59,6 @@ const facultyLookLike = async (req, res) => {
   }
 };
 const sessionLookLike = async (req, res) => {
-
   const session = req.params.slug;
 
   try {
@@ -77,5 +75,28 @@ const sessionLookLike = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+const roomLookLike = async (req, res) => {
+  const room = req.params.slug;
 
-export { courseLookLike, sectionLookLike,facultyLookLike,sessionLookLike };
+  try {
+    const rooms = await pool.query(
+      `SELECT * 
+           FROM classroom
+           WHERE LOWER(room) LIKE '%' || LOWER($1) || '%' LIMIT 5`,
+      [room]
+    );
+
+    return res.status(200).json({ rows: rooms.rows });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+export {
+  courseLookLike,
+  sectionLookLike,
+  facultyLookLike,
+  sessionLookLike,
+  roomLookLike,
+};
