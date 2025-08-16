@@ -60,24 +60,4 @@ const facultyLookLike = async (req, res) => {
   }
 };
 
-const sessionLookLike = async (req, res) => {
-
-  const session = req.params.slug;
-
-  try {
-    const sessions = await pool.query(
-      `SELECT * 
-           FROM session
-           WHERE LOWER(session) LIKE '%' || LOWER($1) || '%' LIMIT 5`,
-      [session]
-    );
-
-    return res.status(200).json({ rows: sessions.rows });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-};
-
-
-export { courseLookLike, sectionLookLike,facultyLookLike,sessionLookLike };
+export { courseLookLike, sectionLookLike,facultyLookLike };
