@@ -12,6 +12,7 @@ import courseLookLike from "./routes/LookLike.route.js";
 import sectionRoutine from "./routes/sectionRoutine.route.js";
 import userProfile from "./routes/UserPersonal.route.js";
 import room from "./routes/Room.route.js";
+import classs from "./routes/class.route.js";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/section", sectionRoutine);
 app.use("/api/user", userProfile);
 app.use("/api/lookLike", courseLookLike);
 app.use("/api/room", room);
+app.use("/api/class", classs);
 
 // Export as a function for Vercel
 export default app;
