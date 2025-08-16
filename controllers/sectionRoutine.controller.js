@@ -4,8 +4,8 @@ import pool from "../db.js";
 
 const sectionRoutine = async (req, res) => {
   //   const { section  } = req.body;
-  const section = req.params.slug;
-
+  // const section = req.params.slug;
+   const { section,session } = req.params;
   try {
     const user = await pool.query(
       `
@@ -18,9 +18,9 @@ STRING_AGG(sec, ', ' ORDER BY sec) AS sec,
     STRING_AGG(room, ', ' ORDER BY room) AS room,
     STRING_AGG(class_id::TEXT, ', ' ORDER BY class_id) AS class_id
      from 
-(select * from class where sec = $1) as t
+(select * from class where LOWER(sec) = LOWER($1) and LOWER(session) = LOWER($2)) as t
 group by day,slot order by day,slot`,
-      [section]
+      [section,session]
     );
     let final = [];
     for (let i = 0; i < user.rows.length; i++) {
