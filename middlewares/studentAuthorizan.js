@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Middleware to verify the token
-export default function(req, res, next) {
+export default function (req, res, next) {
   // Get token from the header
   const token = req.header("jwtToken");
 
@@ -21,11 +21,12 @@ export default function(req, res, next) {
 
     // Attach the user data to the request object
     req.user = verify.user;
-  
-    
-    if(req.user.type != "student")
-        return res.status(403).json({ msg: "authorization denied, not a student type" });
-    next();  // Move to the next middleware or route handler
+
+    if (req.user.type != "student" && req.user.type != "cr")
+      return res
+        .status(403)
+        .json({ msg: "authorization denied, not a student type" });
+    next(); // Move to the next middleware or route handler
   } catch (err) {
     // Handle invalid token case
     res.status(401).json({ msg: "Token is not valid" });
